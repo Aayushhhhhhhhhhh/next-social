@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
+import Image from "next/image";
+import { posts } from "@/constants";
 
-const PostFeed = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+const PostFeed = () => {};
 
-export default PostFeed
+export default PostFeed;
