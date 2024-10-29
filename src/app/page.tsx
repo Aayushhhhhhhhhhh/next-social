@@ -1,8 +1,8 @@
-import AddPost from "@/components/AddPost";
-import LeftMenu from "@/components/LeftMenu";
-import PostFeed from "@/components/PostFeed";
-import RightMenu from "@/components/RightMenu";
-import Stories from "@/components/Stories";
+import AddPost from "@/components/AddPost/AddPost";
+import LeftMenu from "@/components/LeftMenu/LeftMenu";
+import PostFeed from "@/components/PostFeed/PostFeed";
+import RightMenu from "@/components/RightMenu/RightMenu";
+import Stories from "@/components/Stories/Stories";
 
 const Homepage = () => {
   return (
@@ -14,7 +14,7 @@ const Homepage = () => {
       <div className="w-full lg:w-[70%] xl:w-[50%]">
         <div className="flex flex-col gap-6">
           <Stories />
-          <AddPost />
+          <AddPost placeholder={"What's on your mind"} postOptions={true} />
           <PostFeed />
         </div>
       </div>

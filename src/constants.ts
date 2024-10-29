@@ -70,3 +70,21 @@ export const posts = [
     postText: "Poll",
   },
 ];
+
+export const postInteraction = [
+  {
+    interactionUrl: "/like.png",
+    interactionText: "Likes",
+    interactionCount: "500",
+  },
+  {
+    interactionUrl: "/comment.png",
+    interactionText: "Comments",
+    interactionCount: "500",
+  },
+  {
+    interactionUrl: "/share.png",
+    interactionText: "Share",
+    interactionCount: "500",
+  },
+];

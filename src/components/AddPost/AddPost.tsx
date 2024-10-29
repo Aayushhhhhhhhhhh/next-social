@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { posts } from "@/constants";
+import { IAddPost } from "./AddPostTypes";
 
-const AddPost = () => {
+const AddPost: React.FC<IAddPost> = (props) => {
   return (
     <div className="p-4 bg-white rounded-lg flex gap-4 justify-between text-sm">
       {/* AVATAR */}
@@ -18,7 +19,7 @@ const AddPost = () => {
         {/* TEXTAREA */}
         <div className="flex gap-4 ">
           <textarea
-            placeholder="what's on your mind"
+            placeholder={props.placeholder}
             name=""
             id=""
             className="rounded-lg bg-slate-100 flex-1 p-2"
@@ -33,14 +34,16 @@ const AddPost = () => {
         </div>
 
         {/* POST OPTIONS */}
-        <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
-          {posts.map((post) => (
-            <div className="flex items-center gap-2 cursor-pointer">
-              <Image src={post.postUrl} alt="avatar" width={20} height={20} />
-              <span>{post.postText}</span>
-            </div>
-          ))}
-        </div>
+        {props.postOptions && (
+          <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
+            {posts.map((post) => (
+              <div className="flex items-center gap-2 cursor-pointer">
+                <Image src={post.postUrl} alt="avatar" width={20} height={20} />
+                <span>{post.postText}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
