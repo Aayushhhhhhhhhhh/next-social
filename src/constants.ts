@@ -88,3 +88,26 @@ export const postInteraction = [
     interactionCount: "500",
   },
 ];
+
+export const requestsProfile = [
+  {
+    id: 0,
+    requestProfileImg:
+      "https://images.pexels.com/photos/29062932/pexels-photo-29062932/free-photo-of-urban-fashion-shoot-with-street-art.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    requestProfileName: "Aayush",
+  },
+
+  {
+    id: 1,
+    requestProfileImg:
+      "https://images.pexels.com/photos/29062932/pexels-photo-29062932/free-photo-of-urban-fashion-shoot-with-street-art.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    requestProfileName: "Aayush",
+  },
+
+  {
+    id: 2,
+    requestProfileImg:
+      "https://images.pexels.com/photos/29062932/pexels-photo-29062932/free-photo-of-urban-fashion-shoot-with-street-art.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    requestProfileName: "Aayush",
+  },
+];
