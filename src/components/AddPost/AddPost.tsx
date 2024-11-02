@@ -17,7 +17,7 @@ const AddPost: React.FC<IAddPost> = (props) => {
       {/* POST */}
       <div className="flex flex-col flex-1">
         {/* TEXTAREA */}
-        <div className="flex gap-4 ">
+        <form className="flex gap-4 ">
           <textarea
             placeholder={props.placeholder}
             name=""
@@ -31,13 +31,16 @@ const AddPost: React.FC<IAddPost> = (props) => {
             height={20}
             className="w-12 h-12 object-cover rounded-full cursor-pointer self-end"
           />
-        </div>
+        </form>
 
         {/* POST OPTIONS */}
         {props.postOptions && (
           <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
             {posts.map((post) => (
-              <div className="flex items-center gap-2 cursor-pointer">
+              <div
+                key={post.postText}
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <Image src={post.postUrl} alt="avatar" width={20} height={20} />
                 <span>{post.postText}</span>
               </div>

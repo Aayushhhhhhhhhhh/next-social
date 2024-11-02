@@ -15,7 +15,8 @@ datasource db {
 
 model User {
   id          String          @id
-  username    String          @unique
+  username    String?         @unique
+  email       String          @unique
   avatar      String?
   cover       String?
   name        String?
@@ -41,6 +42,7 @@ model User {
 model Post {
   id        Int       @id @default(autoincrement())
   desc      String
+  img       String?
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
