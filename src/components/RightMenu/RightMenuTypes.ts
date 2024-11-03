@@ -1,3 +1,5 @@
+import { User } from "@prisma/client";
+
 export interface IRightMenu {
-  userId?: string;
+  user?: User | null;
 }

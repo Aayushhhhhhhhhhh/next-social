@@ -46,6 +46,7 @@ const SignUp = () => {
       console.log("inside try");
       const result = await signUp.create({
         emailAddress: emailAddress,
+        username: username,
         password: password,
       });
 

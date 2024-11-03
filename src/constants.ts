@@ -111,3 +111,18 @@ export const requestsProfile = [
     requestProfileName: "Aayush",
   },
 ];
+
+export const userInformation = [
+  {
+    imgUrl: "/map.png",
+    text: `Living In <b>India</b>`,
+  },
+  {
+    imgUrl: "/school.png",
+    text: "Went To COEP",
+  },
+  {
+    imgUrl: "/work.png",
+    text: "Works at xyz",
+  },
+];

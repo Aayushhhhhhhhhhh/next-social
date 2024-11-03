@@ -81,6 +81,8 @@ model Follower {
   followerId  String
   following   User     @relation("UserFollowings", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
+
+  @@unique([followerId, followingId])
 }
 
 model FollowRequest {
