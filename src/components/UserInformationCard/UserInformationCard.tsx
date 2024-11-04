@@ -4,6 +4,8 @@ import React from "react";
 import CardHeading from "../CardHeading/CardHeading";
 import { User } from "@prisma/client";
 import UserInfoCardInteraction from "./UserInfoCardInteraction";
+import { auth } from "@clerk/nextjs/server";
+import { checkFollowingState } from "@/lib/actions";
 const UserInformationCard = async ({ user }: { user: User }) => {
   const date = new Date(user?.createdAt);
   const formattedDate = date.toLocaleString("en-US", {
@@ -14,6 +16,12 @@ const UserInformationCard = async ({ user }: { user: User }) => {
     minute: "numeric",
     second: "numeric",
   });
+
+  const { userId: currentUserId } = await auth();
+
+  const { doIFollow, isFollowRequestSent } = await checkFollowingState(
+    user?.id
+  );
 
   return (
     <section className="p-4 gap-4 bg-white orunded-lg shadow-md flex flex-col text-sm font-medium">
@@ -62,7 +70,13 @@ const UserInformationCard = async ({ user }: { user: User }) => {
         )}
       </div>
 
-      <UserInfoCardInteraction userId={user.id} />
+      {currentUserId && currentUserId !== user?.id && (
+        <UserInfoCardInteraction
+          doIFollow={doIFollow}
+          isFollowRequestSent={isFollowRequestSent}
+          userId={user.id}
+        />
+      )}
     </section>
   );
 };

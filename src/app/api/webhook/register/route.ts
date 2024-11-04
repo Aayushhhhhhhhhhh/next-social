@@ -4,6 +4,10 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { error } from "console";
 import prisma from "@/lib/client";
 
+// export async function POST() {
+//   return Response.json({ message: "The route is working" });
+// }
+
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -57,7 +61,7 @@ export async function POST(req: Request) {
 
   if (eventType === "user.created") {
     try {
-      await prisma.user.create({
+      const userCreatedResponse = await prisma.user.create({
         data: {
           id: evt.data.id,
           email: JSON.parse(body).data.email_addresses[0].email_address,
@@ -66,6 +70,8 @@ export async function POST(req: Request) {
           cover: "/noCover.png",
         },
       });
+
+      console.log("?????????????????????????", userCreatedResponse);
 
       return new Response("User has been created", { status: 200 });
     } catch (err) {

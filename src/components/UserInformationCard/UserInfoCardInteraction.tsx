@@ -1,26 +1,32 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IUserInfoCardInteractions } from "./UserInfoCardInteractionTypes";
-import { toggleFollowButton } from "@/lib/actions";
+import { checkFollowingState } from "@/lib/actions";
 
 const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
   props
 ) => {
   const handleFormSubmit = async () => {
-    setUserState((prev) => ({
-      ...prev,
-      following: prev.following && false,
-      followRequest: !prev.following && !prev.followRequest ? true : false,
-    }));
-
-    await toggleFollowButton(props.userId);
+    console.log("formsubmit called");
+    try {
+      await checkFollowingState(props.userId);
+      setUserState((prev) => ({
+        ...prev,
+        following: prev.following && false,
+        followRequest: !prev.following && !prev.followRequest ? true : false,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const [userState, setUserState] = useState({
-    following: false,
+    following: props.doIFollow,
     blocked: false,
-    followRequest: false,
+    followRequest: props.isFollowRequestSent,
   });
+
+  console.log("userState", userState);
 
   return (
     <>

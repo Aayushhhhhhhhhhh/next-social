@@ -3,73 +3,98 @@
 import { auth } from "@clerk/nextjs/server";
 import prisma from "./client";
 
-export const toggleFollowButton = async (userId: string) => {
+export const checkFollowingState = async (userId: string) => {
+  console.log("inside toggle button");
+  let doIFollow = false;
+  let isFollowRequestSent = false;
   const { userId: currentUserId } = await auth();
   if (!currentUserId) {
     throw new Error("User not authenticated");
   }
 
-  const alreadyFollowerResponse = await prisma.follower.findFirst({
-    where: {
-      followerId: currentUserId,
-      followingId: userId,
-    },
-  });
+  console.log("after alreadyFollowerResponse");
 
-  if (alreadyFollowerResponse) {
-    await prisma.follower.delete({
+  try {
+    const alreadyFollowerResponse = await prisma.follower.findFirst({
       where: {
-        id: alreadyFollowerResponse?.id,
+        followerId: currentUserId,
+        followingId: userId,
       },
     });
-    return;
-  }
+    if (alreadyFollowerResponse) {
+      await prisma.follower.delete({
+        where: {
+          id: alreadyFollowerResponse?.id,
+        },
+      });
+      doIFollow = true;
+      return { doIFollow, isFollowRequestSent };
+    }
 
-  const followRequestSentResponse = await prisma.followRequest.findFirst({
-    where: {
-      senderId: currentUserId,
-      recieverId: userId,
-    },
-  });
-
-  if (followRequestSentResponse) {
-    await prisma.followRequest.delete({
+    const followRequestSentResponse = await prisma.followRequest.findFirst({
       where: {
-        id: followRequestSentResponse?.id,
+        senderId: currentUserId,
+        recieverId: userId,
       },
     });
-    return;
+
+    if (followRequestSentResponse) {
+      await prisma.followRequest.delete({
+        where: {
+          id: followRequestSentResponse?.id,
+        },
+      });
+      isFollowRequestSent = true;
+      return { doIFollow, isFollowRequestSent };
+    }
+
+    console.log("before createResponse");
+    const createResponse = await prisma.followRequest.create({
+      data: {
+        senderId: currentUserId,
+        recieverId: userId,
+      },
+    });
+    return { doIFollow, isFollowRequestSent };
+  } catch (error) {
+    console.error(error);
+    return { doIFollow: false, isFollowRequestSent: false };
   }
+};
 
-  await prisma.followRequest.create({
-    data: {
-      senderId: currentUserId,
-      recieverId: userId,
-    },
-  });
+export const acceptDeclineFollowRequest = async (
+  userId: string,
+  accept: boolean = false
+) => {
+  const { userId: currentUserId } = await auth();
 
-  // if (doIFollow) {
-  //   await prisma.follower.delete({
-  //     where: {
-  //       id: followingResponse?.id,
-  //     },
-  //   });
-  // } else {
-  //   if (isRequestSent) {
-  //     await prisma.followRequest.delete({
-  //       where: {
-  //         id: followRequestResponse?.id,
-  //       },
-  //     });
-  //   } else {
-  //     const created = await prisma.followRequest.create({
-  //       data: {
-  //         senderId: currentUserId,
-  //         recieverId: userId,
-  //       },
-  //     });
+  if (!currentUserId) throw new Error("User not authenticated");
 
-  //     console.log("created", created);
-  //   }
-  // }
+  try {
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: {
+        senderId: userId,
+        recieverId: currentUserId,
+      },
+    });
+
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: {
+          id: existingFollowRequest?.id,
+        },
+      });
+    }
+
+    if (accept) {
+      await prisma.follower.create({
+        data: {
+          followerId: userId,
+          followingId: currentUserId,
+        },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
