@@ -3,16 +3,13 @@
 import { auth } from "@clerk/nextjs/server";
 import prisma from "./client";
 
-export const checkFollowingState = async (userId: string) => {
-  console.log("inside toggle button");
+export const checkFollowingState = async (userId: string, clicked: boolean) => {
   let doIFollow = false;
   let isFollowRequestSent = false;
   const { userId: currentUserId } = await auth();
   if (!currentUserId) {
     throw new Error("User not authenticated");
   }
-
-  console.log("after alreadyFollowerResponse");
 
   try {
     const alreadyFollowerResponse = await prisma.follower.findFirst({
@@ -22,11 +19,12 @@ export const checkFollowingState = async (userId: string) => {
       },
     });
     if (alreadyFollowerResponse) {
-      await prisma.follower.delete({
-        where: {
-          id: alreadyFollowerResponse?.id,
-        },
-      });
+      clicked &&
+        (await prisma.follower.delete({
+          where: {
+            id: alreadyFollowerResponse?.id,
+          },
+        }));
       doIFollow = true;
       return { doIFollow, isFollowRequestSent };
     }
@@ -39,26 +37,27 @@ export const checkFollowingState = async (userId: string) => {
     });
 
     if (followRequestSentResponse) {
-      await prisma.followRequest.delete({
-        where: {
-          id: followRequestSentResponse?.id,
-        },
-      });
+      console.log("????????????");
+      clicked &&
+        (await prisma.followRequest.delete({
+          where: {
+            id: followRequestSentResponse?.id,
+          },
+        }));
       isFollowRequestSent = true;
       return { doIFollow, isFollowRequestSent };
     }
-
-    console.log("before createResponse");
-    const createResponse = await prisma.followRequest.create({
-      data: {
-        senderId: currentUserId,
-        recieverId: userId,
-      },
-    });
+    clicked &&
+      (await prisma.followRequest.create({
+        data: {
+          senderId: currentUserId,
+          recieverId: userId,
+        },
+      }));
     return { doIFollow, isFollowRequestSent };
   } catch (error) {
     console.error(error);
-    return { doIFollow: false, isFollowRequestSent: false };
+    throw new Error("Somethign went wrng");
   }
 };
 

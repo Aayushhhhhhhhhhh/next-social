@@ -1,11 +1,20 @@
 "use client";
-import { IEventCard } from "./EventCardTypes";
+import { IEventCard, RequestWithUser } from "./EventCardTypes";
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
-import useEventCard from "./useEventCard";
+import { acceptDeclineFollowRequest } from "@/lib/actions";
 const EventCard: React.FC<IEventCard> = (props) => {
-  const { showList, setShowList, handleAcceptDeclineClick } = useEventCard();
+  const handleAcceptDeclineClick = async (
+    requests: RequestWithUser[] | undefined,
+    index: number,
+    accept: boolean
+  ) => {
+    await acceptDeclineFollowRequest(
+      (requests ?? [])[index]?.sender.id,
+      accept
+    );
+  };
   return (
     <div className="text-sm flex flex-col gap-4">
       {/* top */}
@@ -17,23 +26,23 @@ const EventCard: React.FC<IEventCard> = (props) => {
       </div>
 
       {/* bottom meaning user*/}
-      {props.requests?.map((request, index) => (
-        <div key={request.id} className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Image
-              src={request.sender.avatar || "/noCover.png"}
-              alt="user"
-              className="w-10 h-10 rounded-full object-cover"
-              width={40}
-              height={40}
-            />
-            <span className="font-semibold">{request.sender.username}</span>
-          </div>
+      {props.requests && props.requests?.length > 0 ? (
+        props.requests?.map((request, index) => (
+          <div key={request.id} className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Image
+                src={request.sender.avatar || "/noCover.png"}
+                alt="user"
+                className="w-10 h-10 rounded-full object-cover"
+                width={40}
+                height={40}
+              />
+              <span className="font-semibold">{request.sender.username}</span>
+            </div>
 
-          {/* <EventCardInteraction eventName={props.eventName} /> */}
+            {/* <EventCardInteraction eventName={props.eventName} /> */}
 
-          {props.eventName === "Friend Requests" ? (
-            showList ? (
+            {props.eventName === "Friend Requests" ? (
               <div className="flex gap-3 justify-end">
                 <Image
                   src="/accept.png"
@@ -42,7 +51,7 @@ const EventCard: React.FC<IEventCard> = (props) => {
                   width={20}
                   height={20}
                   onClick={() =>
-                    handleAcceptDeclineClick(props.requests, index, true)
+                    handleAcceptDeclineClick(props?.requests, index, true)
                   }
                 />
                 <Image
@@ -57,15 +66,15 @@ const EventCard: React.FC<IEventCard> = (props) => {
                 />
               </div>
             ) : (
-              "No Pending Requests"
-            )
-          ) : (
-            <button className="bg-blue-500 text-white text-xs px-2 py-1 rounded-md">
-              Celebrate
-            </button>
-          )}
-        </div>
-      ))}
+              <button className="bg-blue-500 text-white text-xs px-2 py-1 rounded-md">
+                Celebrate
+              </button>
+            )}
+          </div>
+        ))
+      ) : (
+        <p>No Pending requests</p>
+      )}
     </div>
   );
 };

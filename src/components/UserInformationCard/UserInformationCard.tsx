@@ -20,7 +20,8 @@ const UserInformationCard = async ({ user }: { user: User }) => {
   const { userId: currentUserId } = await auth();
 
   const { doIFollow, isFollowRequestSent } = await checkFollowingState(
-    user?.id
+    user?.id,
+    false
   );
 
   return (

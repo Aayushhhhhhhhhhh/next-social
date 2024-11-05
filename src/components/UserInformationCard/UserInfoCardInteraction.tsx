@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useOptimistic, useState } from "react";
 import { IUserInfoCardInteractions } from "./UserInfoCardInteractionTypes";
 import { checkFollowingState } from "@/lib/actions";
 
@@ -7,9 +7,10 @@ const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
   props
 ) => {
   const handleFormSubmit = async () => {
+    setOptimisticState("");
     console.log("formsubmit called");
     try {
-      await checkFollowingState(props.userId);
+      await checkFollowingState(props.userId, true);
       setUserState((prev) => ({
         ...prev,
         following: prev.following && false,
@@ -26,6 +27,15 @@ const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
     followRequest: props.isFollowRequestSent,
   });
 
+  const [optimisticState, setOptimisticState] = useOptimistic(
+    userState,
+    (state) => ({
+      ...state,
+      following: state.following && false,
+      followRequest: !state.following && !state.followRequest ? true : false,
+    })
+  );
+
   console.log("userState", userState);
 
   return (
@@ -35,18 +45,16 @@ const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
           type="submit"
           className="bg-blue-500 text-white w-full rounded-md p-2 text-sm"
         >
-          {userState.blocked
-            ? "Unblock User"
-            : userState.following
+          {optimisticState.following
             ? "Following"
-            : userState.followRequest
+            : optimisticState.followRequest
             ? "Request sent"
             : "Follow"}
         </button>
       </form>
 
       <form action="">
-        {!userState.blocked && (
+        {!optimisticState.blocked && (
           <span className="text-red-400 self-end text-xs cursor-pointer">
             Block User
           </span>
