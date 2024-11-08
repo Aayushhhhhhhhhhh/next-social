@@ -1,4 +1,4 @@
-import { FollowRequest } from "@prisma/client";
+import { FollowRequest, User } from "@prisma/client";
 
 type MinimalUser = {
   id: string;
@@ -21,6 +21,8 @@ export type RequestWithUser = FollowRequest & {
 };
 
 export interface IEventCard {
+  currentUserId: string | null;
+  user: User;
   eventName: string;
   requests?: RequestWithUser[];
 }

@@ -8,7 +8,6 @@ const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
 ) => {
   const handleFormSubmit = async () => {
     setOptimisticState("");
-    console.log("formsubmit called");
     try {
       await checkFollowingState(props.userId, true);
       setUserState((prev) => ({
@@ -35,8 +34,6 @@ const UserInfoCardInteraction: React.FC<IUserInfoCardInteractions> = (
       followRequest: !state.following && !state.followRequest ? true : false,
     })
   );
-
-  console.log("userState", userState);
 
   return (
     <>

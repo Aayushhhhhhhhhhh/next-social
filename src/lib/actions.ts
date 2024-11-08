@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import prisma from "./client";
+import { z } from "zod";
 
 export const checkFollowingState = async (userId: string, clicked: boolean) => {
   let doIFollow = false;
@@ -37,7 +38,6 @@ export const checkFollowingState = async (userId: string, clicked: boolean) => {
     });
 
     if (followRequestSentResponse) {
-      console.log("????????????");
       clicked &&
         (await prisma.followRequest.delete({
           where: {
@@ -95,5 +95,46 @@ export const acceptDeclineFollowRequest = async (
     }
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const updateProfile = async (formData: FormData) => {
+  const fields = Object.fromEntries(formData);
+
+  const filteredFields = Object.fromEntries(
+    Object.entries(fields).filter(([key, value]) => value !== "")
+  );
+  console.log(fields);
+  const Profile = z.object({
+    cover: z.string().max(60).optional(),
+    name: z.string().max(60).optional(),
+    surname: z.string().max(60).optional(),
+    description: z.string().max(255).optional(),
+    work: z.string().max(60).optional(),
+    website: z.string().max(60).optional(),
+    city: z.string().max(60).optional(),
+  });
+
+  const validateResult = Profile.safeParse(filteredFields);
+
+  if (!validateResult.success) {
+    return "validation of input fields failed";
+  }
+
+  const { userId: currentUserId } = await auth();
+
+  if (!currentUserId) {
+    return "user to be updated does not exists";
+  }
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: currentUserId,
+      },
+      data: validateResult.data,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

@@ -26,7 +26,11 @@ const UserInformationCard = async ({ user }: { user: User }) => {
 
   return (
     <section className="p-4 gap-4 bg-white orunded-lg shadow-md flex flex-col text-sm font-medium">
-      <CardHeading title={"UserInformation"} />
+      <CardHeading
+        currentUserId={currentUserId}
+        user={user}
+        title={"UserInformation"}
+      />
 
       <div className="flex items-center gap-2">
         <span className="text-xl text-black">

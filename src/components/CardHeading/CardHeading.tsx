@@ -1,14 +1,26 @@
 import React from "react";
-import { ICardHeading } from "./CardHeadingTypes";
-import Link from "next/link";
+import UpdateUser from "../UpdateUser/UpdateUser";
+import { User } from "@prisma/client";
 
-const CardHeading: React.FC<ICardHeading> = (props) => {
+const CardHeading = ({
+  title,
+  user,
+  currentUserId,
+}: {
+  title: string;
+  user: User;
+  currentUserId: string | null;
+}) => {
   return (
     <div className="flex justify-between items-center font-medium">
-      <span className="text-gray-500">{props.title}</span>
-      <Link href="/" className="text-blue-500 text-sx">
-        See All
-      </Link>
+      <span className="text-gray-500">{title}</span>
+      <span className="text-blue-500 text-sx">
+        {title === "UserInformation" && currentUserId === user.id ? (
+          <UpdateUser user={user} />
+        ) : (
+          "See All"
+        )}
+      </span>
     </div>
   );
 };

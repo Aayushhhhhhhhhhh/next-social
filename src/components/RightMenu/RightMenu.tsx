@@ -20,7 +20,7 @@ const RightMenu: React.FC<IRightMenu> = (props) => {
           </Suspense>
         </>
       ) : null}
-      <FriendRequest />
+      <FriendRequest user={props.user} />
       <Birthdays />
       <Advertisement size="md" />
     </div>

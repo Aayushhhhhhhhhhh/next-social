@@ -9,7 +9,7 @@ import React from "react";
 
 const ProfilePage = async ({ params }: { params: { username: string } }) => {
   const username = params.username;
-
+  console.log("username????", username);
   const user = await prisma.user.findFirst({
     where: {
       username: username,
@@ -24,6 +24,12 @@ const ProfilePage = async ({ params }: { params: { username: string } }) => {
       },
     },
   });
+
+  console.log("user in profile page", user);
+
+  if (!user) {
+    return notFound();
+  }
 
   const { userId: currentUserId } = await auth();
 

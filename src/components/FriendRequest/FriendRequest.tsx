@@ -2,8 +2,9 @@ import React from "react";
 import EventCard from "../EventCard/EventCard";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
+import { User } from "@prisma/client";
 
-const FriendRequest = async () => {
+const FriendRequest = async ({ user }: { user: User }) => {
   const { userId: currentUserId } = await auth();
 
   if (!currentUserId) return null;
@@ -16,11 +17,14 @@ const FriendRequest = async () => {
       sender: true,
     },
   });
-
-  console.log("requests", requests);
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <EventCard requests={requests} eventName="Friend Requests" />
+      <EventCard
+        currentUserId={currentUserId}
+        user={user}
+        requests={requests}
+        eventName="Friend Requests"
+      />
     </div>
   );
 };
